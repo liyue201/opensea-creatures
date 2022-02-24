@@ -1666,9 +1666,9 @@ abstract contract ERC721Tradable is ERC721, ContextMixin, NativeMetaTransaction,
         return _nextTokenId.current() - 1;
     }
 
-    function baseTokenURI() virtual public pure returns (string memory);
+    function baseTokenURI() virtual public view returns (string memory);
 
-    function tokenURI(uint256 _tokenId) override public pure returns (string memory) {
+    function tokenURI(uint256 _tokenId) override public view returns (string memory) {
         return string(abi.encodePacked(baseTokenURI(), Strings.toString(_tokenId)));
     }
 
@@ -1714,12 +1714,20 @@ pragma solidity ^0.8.0;
  */
 contract Creature is ERC721Tradable {
 
+    string public _baseTokenURI;
+
     constructor(address _proxyRegistryAddress)
     ERC721Tradable("Creature", "OSC", _proxyRegistryAddress)
-    {}
+    {
+        _baseTokenURI = "https://creatures-api.opensea.io/api/creature/";
+    }
 
-    function baseTokenURI() override public pure returns (string memory) {
-        return "https://creatures-api.opensea.io/api/creature/";
+    function baseTokenURI() override public view returns (string memory) {
+        return _baseTokenURI;
+    }
+
+    function setBaseTokenURI(string memory _baseURI) public onlyOwner {
+        _baseTokenURI = _baseURI;
     }
 
     function contractURI() public pure returns (string memory) {
